@@ -13,10 +13,9 @@ import androidx.core.content.ContextCompat;
 public class Toyka_Display extends SurfaceView implements SurfaceHolder.Callback, DisplayInterface {
     private final Context context;
 
-    private Joystick joy_direction = new Joystick(40,50,Joystick.HORIZONTAL);
-    private Joystick joy_speed = new Joystick(40,50,Joystick.VERTICAL);
 
     private long startTime = System.nanoTime();
+
     private double ups = 0;
     private String[] cosole = {"","","",""};
 
@@ -26,8 +25,15 @@ public class Toyka_Display extends SurfaceView implements SurfaceHolder.Callback
     private boolean should_hide_menu_bar;
     private long smoothTime = System.nanoTime();;
 
+    private final Joystick joy_direction;
+    private final Joystick joy_speed;
+
     public Toyka_Display(Context context) {
         super(context);
+
+        joy_direction = new Joystick(40,50,Joystick.HORIZONTAL, context);
+        joy_speed = new Joystick(40,50,Joystick.VERTICAL, context);
+
         surfaceHolder.addCallback(this);
         this.context = context;
         setFocusable(true);
@@ -42,6 +48,7 @@ public class Toyka_Display extends SurfaceView implements SurfaceHolder.Callback
         drawUPS(canvas);
         drawFPS(canvas,smoothTime);
         drawConsole(canvas);
+        joy_speed.draw(canvas);
     }
 
     @Override
@@ -74,8 +81,7 @@ public class Toyka_Display extends SurfaceView implements SurfaceHolder.Callback
 
     @Override
     public void setJoystickLocation(double x, double y) {
-        joy_direction.setLocation(x,0.0);
-        joy_speed.setLocation(0.0,y);
+
     }
 
     @Override
