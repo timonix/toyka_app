@@ -11,10 +11,22 @@ import java.nio.charset.StandardCharsets;
 public class Toyka_UDP implements UdpInputInterface,UdpOutputInterface{
     byte [] IP = {(byte) 192, (byte) 168,4,1};
     boolean started = false;
+    private static Toyka_UDP inst;
 
     //input variables
     String[] debugStrings = {"line 0","line 1","line 2","line 3"};
     private DatagramSocket dsocket;
+
+    private Toyka_UDP(){
+
+    }
+
+    public static Toyka_UDP getIo() {
+        if (inst == null){
+            inst = new Toyka_UDP();
+        }
+        return inst;
+    }
 
     @Override
     public boolean interfaceStarted() {
@@ -31,6 +43,7 @@ public class Toyka_UDP implements UdpInputInterface,UdpOutputInterface{
             );
             DatagramSocket datagramSocket = new DatagramSocket();
             datagramSocket.send(packet);
+
             System.out.println(InetAddress.getLocalHost().getHostAddress());
         } catch(Exception e){
             e.printStackTrace();
@@ -88,7 +101,6 @@ public class Toyka_UDP implements UdpInputInterface,UdpOutputInterface{
     @Override
     public void startSocket() {
         try {
-            System.out.println(started);
             if (!started){
                 dsocket = new DatagramSocket(14201);
                 started = true;

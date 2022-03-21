@@ -33,6 +33,8 @@ public class MainLoop extends Thread {
                     debug_2 = ((UdpInputInterface) i).debug(2);
                     debug_3 = ((UdpInputInterface) i).debug(3);
                 }
+
+
             }
 
             //calculate logic
@@ -42,8 +44,7 @@ public class MainLoop extends Thread {
             //set outputs
             for(GenericInterface i :interfaceList){
                 if (i instanceof DisplayInterface && i.interfaceStarted()){
-                    ((DisplayInterface) i).updateUPS(41.9);
-                    ((DisplayInterface) i).updateFPS(125);
+                    ((DisplayInterface) i).updateUPS(125);
                     ((DisplayInterface) i).updateDebugConsole(debug_0,0);
                     ((DisplayInterface) i).updateDebugConsole(debug_1,1);
                     ((DisplayInterface) i).updateDebugConsole(debug_2,2);

@@ -16,15 +16,15 @@ public class Toyka_Display extends SurfaceView implements SurfaceHolder.Callback
     private Joystick joy_direction = new Joystick(40,50,Joystick.HORIZONTAL);
     private Joystick joy_speed = new Joystick(40,50,Joystick.VERTICAL);
 
-    private double joystick_x = 0;
-    private double joystick_y = 0;
+    private long startTime = System.nanoTime();
     private double ups = 0;
-    private double fps = 0;
     private String[] cosole = {"","","",""};
 
     private boolean displayStarted = false;
 
     SurfaceHolder surfaceHolder = getHolder();
+    private boolean should_hide_menu_bar;
+    private long smoothTime = System.nanoTime();;
 
     public Toyka_Display(Context context) {
         super(context);
@@ -35,9 +35,12 @@ public class Toyka_Display extends SurfaceView implements SurfaceHolder.Callback
 
     @Override
     public void draw(Canvas canvas) {
+        long elapsed = System.nanoTime() - startTime;
+        startTime = System.nanoTime();
+        smoothTime = (smoothTime*9+elapsed)/10;
         super.draw(canvas);
         drawUPS(canvas);
-        drawFPS(canvas);
+        drawFPS(canvas,smoothTime);
         drawConsole(canvas);
     }
 
@@ -48,7 +51,18 @@ public class Toyka_Display extends SurfaceView implements SurfaceHolder.Callback
 
     @Override
     public void drawAll() {
+
         Canvas c = surfaceHolder.lockCanvas();
+
+        if (c == null) {
+            should_hide_menu_bar = true;
+            return;
+        }
+        if (should_hide_menu_bar){
+            should_hide_menu_bar = false;
+
+            ((MainActivity)context).getSupportActionBar().hide();
+        }
         draw(c);
         surfaceHolder.unlockCanvasAndPost(c);
     }
@@ -57,15 +71,11 @@ public class Toyka_Display extends SurfaceView implements SurfaceHolder.Callback
     public void updateUPS(double ups){
         this.ups = ups;
     }
-    @Override
-    public void updateFPS(double fps){
-        this.fps = fps;
-    }
 
     @Override
     public void setJoystickLocation(double x, double y) {
-        joystick_x = x;
-        joystick_y = y;
+        joy_direction.setLocation(x,0.0);
+        joy_speed.setLocation(0.0,y);
     }
 
     @Override
@@ -82,6 +92,7 @@ public class Toyka_Display extends SurfaceView implements SurfaceHolder.Callback
 
         for(int i = 0; i< cosole.length ; i++){
             canvas.drawText(cosole[i],100,100 + 20*i,paint);
+
         }
     }
 
@@ -89,21 +100,21 @@ public class Toyka_Display extends SurfaceView implements SurfaceHolder.Callback
 
     }
 
-    private void drawUPS(@NonNull Canvas canvas){
-        String averageUPS = Double.toString(ups);
+    private void drawFPS(@NonNull Canvas canvas, long elapsed){
+        String averageUPS = Double.toString(1.0/(elapsed*Math.pow(10,-9)));
         Paint paint = new Paint();
         int color =  ContextCompat.getColor(context,R.color.teal_200);
         paint.setColor(color);
         paint.setTextSize(50);
 
-        canvas.drawText("UPS:"+averageUPS,100,20,paint);
+        canvas.drawText("UPS:"+averageUPS,100,500,paint);
 
 
     }
 
 
-    private void drawFPS(@NonNull Canvas canvas) {
-        String averageFPS = Double.toString(fps);
+    private void drawUPS(@NonNull Canvas canvas) {
+        String averageFPS = Double.toString(ups);
         Paint paint = new Paint();
         int color =  ContextCompat.getColor(context,R.color.teal_200);
         paint.setColor(color);
