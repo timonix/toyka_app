@@ -14,6 +14,7 @@ public class Toyka_Display extends SurfaceView implements SurfaceHolder.Callback
     private final Context context;
     private double ups = 0;
     private double fps = 0;
+    private String[] cosole = {"","","",""};
 
     private boolean displayStarted = false;
 
@@ -31,6 +32,7 @@ public class Toyka_Display extends SurfaceView implements SurfaceHolder.Callback
         super.draw(canvas);
         drawUPS(canvas);
         drawFPS(canvas);
+        drawConsole(canvas);
     }
 
     @Override
@@ -54,6 +56,22 @@ public class Toyka_Display extends SurfaceView implements SurfaceHolder.Callback
         this.fps = fps;
     }
 
+    @Override
+    public void updateDebugConsole(String debug,int line) {
+
+        cosole[line] = debug;
+    }
+
+    private void drawConsole(@NonNull Canvas canvas){
+        Paint paint = new Paint();
+        int color =  ContextCompat.getColor(context,R.color.teal_200);
+        paint.setColor(color);
+        paint.setTextSize(50);
+
+        for(int i = 0; i< cosole.length ; i++){
+            canvas.drawText(cosole[i],100,100 + 20*i,paint);
+        }
+    }
 
     private void drawUPS(@NonNull Canvas canvas){
         String averageUPS = Double.toString(ups);
@@ -62,7 +80,6 @@ public class Toyka_Display extends SurfaceView implements SurfaceHolder.Callback
         paint.setColor(color);
         paint.setTextSize(50);
         canvas.drawText("UPS:"+averageUPS,100,20,paint);
-
     }
 
 
