@@ -7,6 +7,9 @@ public class MainLoop extends Thread {
     List<GenericInterface> interfaceList = new ArrayList<>();
     private boolean isRunning = true;
 
+    private long loopStartTime = System.nanoTime();
+    private long smoothTime;
+
     public void addInterface(GenericInterface io) {
         interfaceList.add(io);
     }
@@ -38,13 +41,16 @@ public class MainLoop extends Thread {
             }
 
             //calculate logic
-
+            long elapsed = System.nanoTime() - loopStartTime;
+            loopStartTime = System.nanoTime();
+            smoothTime = (smoothTime*9+elapsed)/10;
 
 
             //set outputs
             for(GenericInterface i :interfaceList){
                 if (i instanceof DisplayInterface && i.interfaceStarted()){
-                    ((DisplayInterface) i).updateUPS(125);
+                    
+                    ((DisplayInterface) i).updateUPS(1.0/(smoothTime*Math.pow(10,-9)));
                     ((DisplayInterface) i).updateDebugConsole(debug_0,0);
                     ((DisplayInterface) i).updateDebugConsole(debug_1,1);
                     ((DisplayInterface) i).updateDebugConsole(debug_2,2);
