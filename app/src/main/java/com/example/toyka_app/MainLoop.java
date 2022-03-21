@@ -11,7 +11,6 @@ public class MainLoop extends Thread {
         interfaceList.add(io);
     }
 
-
     @Override
     public void run() {
         super.run();
@@ -37,6 +36,9 @@ public class MainLoop extends Thread {
             }
 
             //calculate logic
+
+
+
             //set outputs
             for(GenericInterface i :interfaceList){
                 if (i instanceof DisplayInterface && i.interfaceStarted()){

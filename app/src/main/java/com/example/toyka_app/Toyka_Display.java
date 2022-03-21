@@ -12,6 +12,12 @@ import androidx.core.content.ContextCompat;
 
 public class Toyka_Display extends SurfaceView implements SurfaceHolder.Callback, DisplayInterface {
     private final Context context;
+
+    private Joystick joy_direction = new Joystick(40,50,Joystick.HORIZONTAL);
+    private Joystick joy_speed = new Joystick(40,50,Joystick.VERTICAL);
+
+    private double joystick_x = 0;
+    private double joystick_y = 0;
     private double ups = 0;
     private double fps = 0;
     private String[] cosole = {"","","",""};
@@ -57,6 +63,12 @@ public class Toyka_Display extends SurfaceView implements SurfaceHolder.Callback
     }
 
     @Override
+    public void setJoystickLocation(double x, double y) {
+        joystick_x = x;
+        joystick_y = y;
+    }
+
+    @Override
     public void updateDebugConsole(String debug,int line) {
 
         cosole[line] = debug;
@@ -73,13 +85,20 @@ public class Toyka_Display extends SurfaceView implements SurfaceHolder.Callback
         }
     }
 
+    private void drawJoystick(@NonNull Canvas canvas){
+
+    }
+
     private void drawUPS(@NonNull Canvas canvas){
         String averageUPS = Double.toString(ups);
         Paint paint = new Paint();
         int color =  ContextCompat.getColor(context,R.color.teal_200);
         paint.setColor(color);
         paint.setTextSize(50);
+
         canvas.drawText("UPS:"+averageUPS,100,20,paint);
+
+
     }
 
 
