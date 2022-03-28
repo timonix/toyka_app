@@ -32,7 +32,7 @@ public class Display extends SurfaceView implements SurfaceHolder.Callback {
         super(context);
 
         joy_direction = new Joystick(40,50,Joystick.HORIZONTAL, context);
-        joy_speed = new Joystick(40,50,Joystick.VERTICAL, context);
+        joy_speed = new Joystick(250,1000,Joystick.VERTICAL, context);
 
         surfaceHolder.addCallback(this);
         this.context = context;
