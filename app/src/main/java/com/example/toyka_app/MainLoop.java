@@ -30,7 +30,6 @@ public class MainLoop extends Thread {
                 }
                 if (i instanceof UdpInputInterface && i.interfaceStarted()){
 
-                    ((UdpInputInterface) i).handleIncomingPacket();
                     debug_0 = ((UdpInputInterface) i).debug(0);
                     debug_1 = ((UdpInputInterface) i).debug(1);
                     debug_2 = ((UdpInputInterface) i).debug(2);

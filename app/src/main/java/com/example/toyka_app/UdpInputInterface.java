@@ -8,6 +8,5 @@ public interface UdpInputInterface extends GenericInterface {
 
     String debug(int i);
 
-    public void handleIncomingPacket();
     public void startSocket();
 }
