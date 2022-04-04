@@ -35,6 +35,8 @@ public class MainLoop extends Thread {
             String debug_2 = udp.debug(2);
             String debug_3 = udp.debug(3);
 
+
+
             //calculate logic
             long elapsed = System.nanoTime() - loopStartTime;
             loopStartTime = System.nanoTime();
@@ -61,7 +63,8 @@ public class MainLoop extends Thread {
             disp.updateDebugConsole(debug_1,1);
             disp.updateDebugConsole(debug_2,2);
             disp.updateDebugConsole(debug_3,3);
-            disp.drawAll();
+
+            disp.updateBatteryIndicator(udp.batteryLevel()/256.0);
 
             udp.send_speed((byte) 100);
             udp.send_direction((byte) 5);

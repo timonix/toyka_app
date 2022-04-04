@@ -17,6 +17,8 @@ public class Display extends SurfaceView implements SurfaceHolder.Callback {
     private long startTime = System.nanoTime();
 
     private double ups = 0;
+    private double batteryLevel = 0;
+
     private String[] cosole = {"","","",""};
 
     private boolean displayStarted = false;
@@ -27,6 +29,7 @@ public class Display extends SurfaceView implements SurfaceHolder.Callback {
 
     public final Joystick joy_direction;
     public final Joystick joy_speed;
+
 
     private Float touchX = null;
     private Float touchY = null;
@@ -40,6 +43,12 @@ public class Display extends SurfaceView implements SurfaceHolder.Callback {
         surfaceHolder.addCallback(this);
         this.context = context;
         setFocusable(true);
+
+        new Thread(() -> {
+            while(true){
+                drawAll();
+            }
+        }).start();
     }
 
     @Override
@@ -109,7 +118,7 @@ public class Display extends SurfaceView implements SurfaceHolder.Callback {
         paint.setTextSize(50);
 
         for(int i = 0; i< cosole.length ; i++){
-            canvas.drawText(cosole[i],100,100 + 20*i,paint);
+            canvas.drawText(cosole[i],100,100 + 55*i,paint);
 
         }
     }
@@ -125,7 +134,7 @@ public class Display extends SurfaceView implements SurfaceHolder.Callback {
         paint.setColor(color);
         paint.setTextSize(50);
 
-        canvas.drawText("UPS:"+averageUPS,100,500,paint);
+        canvas.drawText("FPS:"+averageUPS,100,450,paint);
 
 
     }
@@ -137,7 +146,7 @@ public class Display extends SurfaceView implements SurfaceHolder.Callback {
         int color =  ContextCompat.getColor(context,R.color.teal_200);
         paint.setColor(color);
         paint.setTextSize(50);
-        canvas.drawText("UPS:"+averageFPS,100,280,paint);
+        canvas.drawText("UPS:"+averageFPS,100,390,paint);
     }
 
     @Override
@@ -176,4 +185,7 @@ public class Display extends SurfaceView implements SurfaceHolder.Callback {
     }
 
 
+    public void updateBatteryIndicator(double batteryLevel) {
+        this.batteryLevel = batteryLevel;
+    }
 }

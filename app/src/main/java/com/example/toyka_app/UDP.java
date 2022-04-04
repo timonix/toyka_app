@@ -14,9 +14,11 @@ import java.util.Enumeration;
 import java.util.concurrent.ThreadPoolExecutor;
 
 public class UDP{
+    private final LOGGER logger = LOGGER.getLogger(this.getClass());
     byte [] IP = {(byte) 192, (byte) 168,4,1};
     boolean started = false;
     private static UDP inst;
+    private byte battery_level = 0;
 
     static byte ACCELEROMETER_HEADER = 80;
     static byte GYROSCOPE_HEADER = 81;
@@ -62,9 +64,9 @@ public class UDP{
             datagramSocket.send(packet);
             datagramSocket.close();
 
-            //System.out.println(InetAddress.getLocalHost().getHostAddress());
         } catch(Exception e){
             e.printStackTrace();
+            debugStrings[3] = e.getMessage();
             System.err.println("");
         }
 
@@ -84,6 +86,7 @@ public class UDP{
             datagramSocket.close();
         } catch(Exception e){
             e.printStackTrace();
+            debugStrings[3] = e.getMessage();
             System.err.println("");
 
         }
@@ -96,7 +99,7 @@ public class UDP{
 
 
     public byte batteryLevel() {
-        return 0;
+        return battery_level;
     }
 
 
@@ -121,7 +124,10 @@ public class UDP{
             buffer[packet.getLength()]='\0';
             if (buffer[0]==DEBUG_HEADER){
                 debugStrings[buffer[1]%4] = new String(buffer, StandardCharsets.UTF_8);
+            }else if(buffer[0]==BATTERI_HEADER){
+                battery_level = buffer[1];
             }
+
 
 
         } catch (SocketTimeoutException e) {
@@ -148,6 +154,7 @@ public class UDP{
 
         } catch (Exception e) {
             System.err.println(e);
+            debugStrings[3] = e.getMessage();
             e.printStackTrace();
         }
     }
