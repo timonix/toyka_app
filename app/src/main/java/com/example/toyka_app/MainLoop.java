@@ -44,6 +44,7 @@ public class MainLoop extends Thread {
             disp.updateDebugConsole(debug_1,1);
             disp.updateDebugConsole(debug_2,2);
             disp.updateDebugConsole(debug_3,3);
+            disp.drawAll();
 
             udp.send_speed((byte) 100);
             udp.send_direction((byte) 5);
