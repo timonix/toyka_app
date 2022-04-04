@@ -2,15 +2,15 @@ package com.example.toyka_app;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 
-public class Toyka_Display extends SurfaceView implements SurfaceHolder.Callback, DisplayInterface {
+public class Display extends SurfaceView implements SurfaceHolder.Callback {
     private final Context context;
 
 
@@ -28,7 +28,7 @@ public class Toyka_Display extends SurfaceView implements SurfaceHolder.Callback
     private final Joystick joy_direction;
     private final Joystick joy_speed;
 
-    public Toyka_Display(Context context) {
+    public Display(Context context) {
         super(context);
 
         joy_direction = new Joystick(40,50,Joystick.HORIZONTAL, context);
@@ -51,12 +51,11 @@ public class Toyka_Display extends SurfaceView implements SurfaceHolder.Callback
         joy_speed.draw(canvas);
     }
 
-    @Override
+
     public boolean interfaceStarted(){
         return displayStarted;
     }
 
-    @Override
     public void drawAll() {
 
         Canvas c = surfaceHolder.lockCanvas();
@@ -74,23 +73,22 @@ public class Toyka_Display extends SurfaceView implements SurfaceHolder.Callback
         surfaceHolder.unlockCanvasAndPost(c);
     }
 
-    @Override
+
     public void updateUPS(double ups){
         this.ups = ups;
     }
 
-    @Override
     public void setJoystickLocation(double x, double y) {
 
     }
 
-    @Override
     public void updateDebugConsole(String debug,int line) {
 
         cosole[line] = debug;
     }
 
     private void drawConsole(@NonNull Canvas canvas){
+
         Paint paint = new Paint();
         int color =  ContextCompat.getColor(context,R.color.teal_200);
         paint.setColor(color);

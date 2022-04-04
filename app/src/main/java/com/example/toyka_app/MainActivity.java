@@ -44,17 +44,17 @@ public class MainActivity extends AppCompatActivity {
                         | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
         getSupportActionBar().hide();
-        Toyka_Display disp = new Toyka_Display(this);
+        Display disp = new Display(this);
+
 
         setContentView(disp);
-        MainLoop main = new MainLoop();
-        main.addInterface(disp);
+        UDP udp_io = UDP.getIo();
+        MainLoop main = new MainLoop(disp,udp_io);
 
-        Toyka_UDP udp_io = Toyka_UDP.getIo();
-        main.addInterface(udp_io);
 
         main.start();
 
 
     }
+
 }

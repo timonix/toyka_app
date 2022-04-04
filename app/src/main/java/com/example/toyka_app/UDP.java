@@ -13,16 +13,24 @@ import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
 import java.util.concurrent.ThreadPoolExecutor;
 
-public class Toyka_UDP implements UdpInputInterface,UdpOutputInterface{
+public class UDP{
     byte [] IP = {(byte) 192, (byte) 168,4,1};
     boolean started = false;
-    private static Toyka_UDP inst;
+    private static UDP inst;
+
+    static byte ACCELEROMETER_HEADER = 80;
+    static byte GYROSCOPE_HEADER = 81;
+    static byte BATTERI_HEADER = 82;
+    static byte DEBUG_HEADER = 100;
+    static byte NO_DATA_HEADER = (byte) 255;
+    static byte STICK_DIRECTION_HEADER = 50;
+    static byte TARGET_SPEED_HEADER = 51;
 
     //input variables
     private String[] debugStrings = {"line 0","line 1","line 2","line 3"};
     private DatagramSocket dsocket;
 
-    private Toyka_UDP(){
+    private UDP(){
         new Thread(() -> {
             while(true){
                 handleIncomingPacket();
@@ -30,19 +38,18 @@ public class Toyka_UDP implements UdpInputInterface,UdpOutputInterface{
         }).start();
     }
 
-    public static Toyka_UDP getIo() {
+    public static UDP getIo() {
         if (inst == null){
-            inst = new Toyka_UDP();
+            inst = new UDP();
         }
         return inst;
     }
 
-    @Override
+
     public boolean interfaceStarted() {
         return started;
     }
 
-    @Override
     public void send_direction(byte direction){
 
         byte[] buffer = {STICK_DIRECTION_HEADER, direction};
@@ -64,7 +71,6 @@ public class Toyka_UDP implements UdpInputInterface,UdpOutputInterface{
 
     }
 
-    @Override
     public void send_speed(byte speed) {
 
         byte[] buffer = {TARGET_SPEED_HEADER, speed};
@@ -79,12 +85,23 @@ public class Toyka_UDP implements UdpInputInterface,UdpOutputInterface{
         } catch(Exception e){
             e.printStackTrace();
             System.err.println("");
+
         }
     }
 
-    @Override
+
     public String debug(int i) {
         return debugStrings[i];
+    }
+
+
+    public byte batteryLevel() {
+        return 0;
+    }
+
+
+    public GyroData getGyroData() {
+        return null;
     }
 
 
@@ -115,10 +132,8 @@ public class Toyka_UDP implements UdpInputInterface,UdpOutputInterface{
         }
     }
 
-    @Override
+
     public void startSocket() {
-
-
         try {
             if (!started){
                 InetAddress addr = getAddress();

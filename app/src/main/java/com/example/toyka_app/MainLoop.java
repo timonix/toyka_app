@@ -4,14 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainLoop extends Thread {
-    List<GenericInterface> interfaceList = new ArrayList<>();
+    final Display disp;
+    final UDP udp;
+
     private boolean isRunning = true;
 
     private long loopStartTime = System.nanoTime();
     private long smoothTime;
 
-    public void addInterface(GenericInterface io) {
-        interfaceList.add(io);
+    public MainLoop(Display disp, UDP udp_io) {
+        this.disp = disp;
+        this.udp = udp_io;
+
     }
 
     @Override
@@ -19,25 +23,13 @@ public class MainLoop extends Thread {
         super.run();
 
         while (isRunning){
-            String debug_0 = "";
-            String debug_1 = "";
-            String debug_2 = "";
-            String debug_3 = "";
             //get inputs
-            for(GenericInterface i :interfaceList){
-                if (i instanceof UdpInputInterface){
-                    ((UdpInputInterface) i).startSocket();
-                }
-                if (i instanceof UdpInputInterface && i.interfaceStarted()){
 
-                    debug_0 = ((UdpInputInterface) i).debug(0);
-                    debug_1 = ((UdpInputInterface) i).debug(1);
-                    debug_2 = ((UdpInputInterface) i).debug(2);
-                    debug_3 = ((UdpInputInterface) i).debug(3);
-                }
-
-
-            }
+            udp.startSocket();
+            String debug_0 = udp.debug(0);
+            String debug_1 = udp.debug(1);
+            String debug_2 = udp.debug(2);
+            String debug_3 = udp.debug(3);
 
             //calculate logic
             long elapsed = System.nanoTime() - loopStartTime;
@@ -45,24 +37,16 @@ public class MainLoop extends Thread {
             smoothTime = (smoothTime*9+elapsed)/10;
 
 
+
             //set outputs
-            for(GenericInterface i :interfaceList){
-                if (i instanceof DisplayInterface && i.interfaceStarted()){
-                    
-                    ((DisplayInterface) i).updateUPS(1.0/(smoothTime*Math.pow(10,-9)));
-                    ((DisplayInterface) i).updateDebugConsole(debug_0,0);
-                    ((DisplayInterface) i).updateDebugConsole(debug_1,1);
-                    ((DisplayInterface) i).updateDebugConsole(debug_2,2);
-                    ((DisplayInterface) i).updateDebugConsole(debug_3,3);
-                    ((DisplayInterface) i).drawAll();
-                }
+            disp.updateUPS(1.0/(smoothTime*Math.pow(10,-9)));
+            disp.updateDebugConsole(debug_0,0);
+            disp.updateDebugConsole(debug_1,1);
+            disp.updateDebugConsole(debug_2,2);
+            disp.updateDebugConsole(debug_3,3);
 
-                if (i instanceof UdpOutputInterface && i.interfaceStarted()){
-                    ((UdpOutputInterface) i).send_speed((byte) 100);
-                    ((UdpOutputInterface) i).send_direction((byte)5);
-
-                }
-            }
+            udp.send_speed((byte) 100);
+            udp.send_direction((byte) 5);
 
         }
     }
