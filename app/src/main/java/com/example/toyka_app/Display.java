@@ -25,14 +25,17 @@ public class Display extends SurfaceView implements SurfaceHolder.Callback {
     private boolean should_hide_menu_bar;
     private long smoothTime = System.nanoTime();;
 
-    private final Joystick joy_direction;
-    private final Joystick joy_speed;
+    public final Joystick joy_direction;
+    public final Joystick joy_speed;
+
+    private Float touchX = null;
+    private Float touchY = null;
 
     public Display(Context context) {
         super(context);
 
-        joy_direction = new Joystick(40,50,Joystick.HORIZONTAL, context);
-        joy_speed = new Joystick(250,1000,Joystick.VERTICAL, context);
+        joy_direction = new Joystick(8.0f/10,7.0f/10,Joystick.HORIZONTAL, context);
+        joy_speed = new Joystick(1.0f/9,2.0f/3,Joystick.VERTICAL, context);
 
         surfaceHolder.addCallback(this);
         this.context = context;
@@ -49,6 +52,7 @@ public class Display extends SurfaceView implements SurfaceHolder.Callback {
         drawFPS(canvas,smoothTime);
         drawConsole(canvas);
         joy_speed.draw(canvas);
+        joy_direction.draw(canvas);
     }
 
 
@@ -79,12 +83,22 @@ public class Display extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void setJoystickLocation(double x, double y) {
-
+        
     }
 
     public void updateDebugConsole(String debug,int line) {
 
         cosole[line] = debug;
+    }
+
+
+    public Joystick getJoyStickSpeed() {
+        return joy_speed;
+    }
+
+
+    public Joystick getJoyStickDirection() {
+        return joy_direction;
     }
 
     private void drawConsole(@NonNull Canvas canvas){
@@ -140,4 +154,26 @@ public class Display extends SurfaceView implements SurfaceHolder.Callback {
     public void surfaceDestroyed(@NonNull SurfaceHolder surfaceHolder) {
 
     }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+            case MotionEvent.ACTION_MOVE:
+                touchX = event.getRawX();
+                touchY = event.getRawY();
+                break;
+            case MotionEvent.ACTION_UP:
+                touchX = null;
+                touchY = null;
+                break;
+        }
+
+        //System.out.println(touchX);
+
+        return true;
+    }
+
+
 }

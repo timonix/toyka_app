@@ -12,11 +12,15 @@ public class MainLoop extends Thread {
     private long loopStartTime = System.nanoTime();
     private long smoothTime;
 
+
+    private Joystick joy_speed;
+    private Joystick joy_direction;
+
     public MainLoop(Display disp, UDP udp_io) {
         this.disp = disp;
         this.udp = udp_io;
-
     }
+
 
     @Override
     public void run() {
@@ -37,13 +41,27 @@ public class MainLoop extends Thread {
             smoothTime = (smoothTime*9+elapsed)/10;
 
 
+            // Joystick stuff
+            if(joy_speed!=null){
+                //joy_speed.setLocation();
+                //float speedSignal = joy_speed.calculateSignal;
+            }
+
+
 
             //set outputs
+
+            joy_speed = disp.getJoyStickSpeed();
+            joy_direction = disp.getJoyStickDirection();
+
+
+
             disp.updateUPS(1.0/(smoothTime*Math.pow(10,-9)));
             disp.updateDebugConsole(debug_0,0);
             disp.updateDebugConsole(debug_1,1);
             disp.updateDebugConsole(debug_2,2);
             disp.updateDebugConsole(debug_3,3);
+            disp.drawAll();
 
             udp.send_speed((byte) 100);
             udp.send_direction((byte) 5);
