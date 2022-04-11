@@ -44,9 +44,15 @@ public class MainLoop extends Thread {
 
 
             // Joystick stuff
-            if(joy_speed!=null){
-                //joy_speed.setLocation();
-                //float speedSignal = joy_speed.calculateSignal;
+            byte speedSignal = 0;    // 100 is default value (middle of 0 and 200)
+            byte directionSignal = 0;
+
+            if (joy_speed != null){
+                speedSignal = joy_speed.calculateSignal();
+            }
+
+            if (joy_direction != null) {
+                directionSignal = joy_direction.calculateSignal();
             }
 
 
@@ -66,8 +72,8 @@ public class MainLoop extends Thread {
             disp.updateBatteryIndicator(udp.batteryLevel()/256.0);
             disp.setJoystickLocation();
 
-            udp.send_speed((byte) 100);
-            udp.send_direction((byte) 5);
+            udp.send_speed(speedSignal);
+            udp.send_direction(directionSignal);
 
         }
     }

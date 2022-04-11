@@ -3,6 +3,7 @@ package com.example.toyka_app;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.icu.util.Output;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -169,52 +170,52 @@ public class Display extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-            switch (event.getActionMasked()) {
-                case MotionEvent.ACTION_DOWN:
-                case MotionEvent.ACTION_POINTER_DOWN:
-                    //Bind
-                    int activePointer = event.getPointerId(event.getActionIndex());
-                    int pointer = event.findPointerIndex(activePointer);
-                    float touchX = event.getX(pointer);
-                    float touchY = event.getY(pointer);
-                    if (joy_speed.isMyJoystick(touchX,touchY))
-                        joy_speed_pointer_id = activePointer;
-                    if (joy_direction.isMyJoystick(touchX,touchY))
-                        joy_direction_pointer_id = activePointer;
-                    break;
-                case MotionEvent.ACTION_MOVE:
-                    for(int i = 0; i<event.getPointerCount();i++){
-                        activePointer = event.getPointerId(i);
-                        pointer = event.findPointerIndex(activePointer);
-                        touchX = event.getX(pointer);
-                        touchY = event.getY(pointer);
-                        System.out.println("active:"+activePointer+" ,speed:"+joy_speed_pointer_id);
-                        if (joy_speed_pointer_id != null && activePointer == joy_speed_pointer_id) {
-                            joy_speed.setLocation(touchX,touchY,false);
-                        }else if (joy_direction_pointer_id != null && activePointer == joy_direction_pointer_id){
-                            joy_direction.setLocation(touchX,touchY,false);
-                        }
-                    }
-
-                    break;
-
-                case MotionEvent.ACTION_UP:
-                case MotionEvent.ACTION_CANCEL:
-                case MotionEvent.ACTION_POINTER_UP:
-                    //unbind
-                    activePointer = event.getPointerId(event.getActionIndex());
+        switch (event.getActionMasked()) {
+            case MotionEvent.ACTION_DOWN:
+            case MotionEvent.ACTION_POINTER_DOWN:
+                //Bind
+                int activePointer = event.getPointerId(event.getActionIndex());
+                int pointer = event.findPointerIndex(activePointer);
+                float touchX = event.getX(pointer);
+                float touchY = event.getY(pointer);
+                if (joy_speed.isMyJoystick(touchX,touchY))
+                    joy_speed_pointer_id = activePointer;
+                if (joy_direction.isMyJoystick(touchX,touchY))
+                    joy_direction_pointer_id = activePointer;
+                break;
+            case MotionEvent.ACTION_MOVE:
+                for(int i = 0; i<event.getPointerCount();i++){
+                    activePointer = event.getPointerId(i);
                     pointer = event.findPointerIndex(activePointer);
+                    touchX = event.getX(pointer);
+                    touchY = event.getY(pointer);
+                    System.out.println("active:"+activePointer+" ,speed:"+joy_speed_pointer_id);
                     if (joy_speed_pointer_id != null && activePointer == joy_speed_pointer_id) {
-                        joy_speed_pointer_id = null;
-                        joy_speed.setLocation(null,null,true);
+                        joy_speed.setLocation(touchX,touchY,false);
+                    }else if (joy_direction_pointer_id != null && activePointer == joy_direction_pointer_id){
+                        joy_direction.setLocation(touchX,touchY,false);
                     }
-                    if (joy_direction_pointer_id != null && activePointer == joy_direction_pointer_id){
-                        joy_direction_pointer_id = null;
-                        joy_direction.setLocation(null,null,true);
-                    }
-                    break;
+                }
 
-            }
+                break;
+
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
+            case MotionEvent.ACTION_POINTER_UP:
+                //unbind
+                activePointer = event.getPointerId(event.getActionIndex());
+                pointer = event.findPointerIndex(activePointer);
+                if (joy_speed_pointer_id != null && activePointer == joy_speed_pointer_id) {
+                    joy_speed_pointer_id = null;
+                    joy_speed.setLocation(null,null,true);
+                }
+                if (joy_direction_pointer_id != null && activePointer == joy_direction_pointer_id){
+                    joy_direction_pointer_id = null;
+                    joy_direction.setLocation(null,null,true);
+                }
+                break;
+
+        }
 
         return true;
     }

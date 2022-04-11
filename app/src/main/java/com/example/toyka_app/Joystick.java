@@ -15,8 +15,8 @@ public class Joystick {
     private float horizontalPosition;   // Relative position of the centre of the joystick from the left. Value between 0-1
     private float verticalPosition;     // Relative position of the centre of the joystick from the top. Value between 0-1
 
-    public double x;
-    public double y;
+    public float x;
+    public float y;
     private final Context context;
 
     private float x_centre;
@@ -109,17 +109,17 @@ public class Joystick {
 
     }
 
-    public float calculateSignal() {
-        /*
-        if (this.type == HORIZONTAL) {
+    public byte calculateSignal() {
 
-        }
-        else {
+        byte signal = 0;     // Default value of the joystick signal when in the middle.
 
-        }
+        if (this.type == HORIZONTAL)
+            signal = (byte)((this.x - this.startX) / (this.endX - this.startX) * 200 - 100) ;
 
-         */
-        return 1;
+        else if (this.type == VERTICAL)
+            signal = (byte)((this.y - this.startY) / (this.endY - this.startY) * -200 + 100);
+
+        return signal;
     }
 
     public void setLocation(Float touchX, Float touchY, boolean release) {
