@@ -122,45 +122,24 @@ public class Joystick {
         return 1;
     }
 
-    public void setLocation(Float touchX, Float touchY) {
-
-        if (touchX != null && touchY != null) {
-            if (abs(touchX - this.x) <= this.radius
-                    && abs(touchY - this.y) <= this.radius) {
-                if (this.x_centre < this.w/2) {
-                    if (this.x < this.w/2) {
-                        this.x = touchX;
-                        this.y = touchY;
-                    }
-                }
-                else {
-                    if (this.x > this.w/2) {
-                        this.x = touchX;
-                        this.y = touchY;
-                    }
-                }
-            }
-
-            if (this.type == HORIZONTAL) {
-                this.y = this.y_centre;
-                if (this.x < this.startX)
-                    this.x = this.startX;
-                else if (this.x > this.endX)
-                    this.x = this.endX;
-            }
-            else if (this.type == VERTICAL) {
-                this.x = this.x_centre;
-                if (this.y < startY)
-                    this.y = this.startY;
-                if (this.y > endY)
-                    this.y = endY;
-            }
-        }
-        else {
+    public void setLocation(Float touchX, Float touchY, boolean release) {
+        if (release){
             this.x = this.x_centre;
             this.y = this.y_centre;
+            return;
         }
+        if (type==HORIZONTAL)
 
+            this.x = ensureRange(touchX,startX,endX);
+        if (type==VERTICAL)
+            this.y = ensureRange(touchY,startY,endY);
+    }
 
+    public boolean isMyJoystick(Float touchX, Float touchY) {
+        return abs(touchX - this.x) <= this.radius*2 && abs(touchY - this.y) <= this.radius;
+    }
+
+    private float ensureRange(float value, float min, float max) {
+        return Math.min(Math.max(value, min), max);
     }
 }
