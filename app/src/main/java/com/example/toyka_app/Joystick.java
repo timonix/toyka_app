@@ -129,14 +129,13 @@ public class Joystick {
             return;
         }
         if (type==HORIZONTAL)
-
             this.x = ensureRange(touchX,startX,endX);
         if (type==VERTICAL)
             this.y = ensureRange(touchY,startY,endY);
     }
 
     public boolean isMyJoystick(Float touchX, Float touchY) {
-        return abs(touchX - this.x) <= this.radius*2 && abs(touchY - this.y) <= this.radius;
+        return abs(touchX - this.x) <= this.radius*1.5 && abs(touchY - this.y) <= this.radius;
     }
 
     private float ensureRange(float value, float min, float max) {
