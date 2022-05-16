@@ -189,7 +189,6 @@ public class Display extends SurfaceView implements SurfaceHolder.Callback {
                     pointer = event.findPointerIndex(activePointer);
                     touchX = event.getX(pointer);
                     touchY = event.getY(pointer);
-                    System.out.println("active:"+activePointer+" ,speed:"+joy_speed_pointer_id);
                     if (joy_speed_pointer_id != null && activePointer == joy_speed_pointer_id) {
                         joy_speed.setLocation(touchX,touchY,false);
                     }else if (joy_direction_pointer_id != null && activePointer == joy_direction_pointer_id){

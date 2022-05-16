@@ -15,10 +15,23 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 public class UDP{
     private final LOGGER logger = LOGGER.getLogger(this.getClass());
-    byte [] IP = {(byte) 192, (byte) 168,4,1};
+    byte [] IP = {(byte) 192, (byte) 168,43,23};
     boolean started = false;
     private static UDP inst;
     private byte battery_level = 0;
+
+    private static final long DELAY_MS = 10;
+    private long last_sent_time = System.currentTimeMillis();
+
+    private byte speed = 0;
+    private byte direction = 0;
+    private enum send_next {
+        SEND_DIRECION, SEND_SPEED
+    }
+
+    private send_next next = send_next.SEND_DIRECION;
+
+
 
     static byte ACCELEROMETER_HEADER = 80;
     static byte GYROSCOPE_HEADER = 81;
@@ -31,8 +44,24 @@ public class UDP{
     //input variables
     private String[] debugStrings = {"line 0","line 1","line 2","line 3"};
     private DatagramSocket dsocket;
+    private byte last_direction = 0;
 
     private UDP(){
+        new Thread(() -> {
+            while(true){
+                if (System.currentTimeMillis() - last_sent_time > DELAY_MS){
+                    if (next == send_next.SEND_DIRECION) {
+                        send_direction(direction);
+                        next = send_next.SEND_SPEED;
+                    }else{
+                        send_speed(speed);
+                        next = send_next.SEND_DIRECION;
+                    }
+                    last_sent_time = System.currentTimeMillis();
+                }
+            }
+        }).start();
+
         new Thread(() -> {
             while(true){
                 handleIncomingPacket();
@@ -52,8 +81,19 @@ public class UDP{
         return started;
     }
 
-    public void send_direction(byte direction){
+    public void update_direction(byte direction){
+        this.direction = direction;
+    }
 
+    public void update_speed(byte speed){
+        this.speed = speed;
+    }
+
+    private void send_direction(byte direction){
+        if (direction != last_direction) {
+            last_direction = direction;
+            System.out.println("direction:"+direction);
+        }
         byte[] buffer = {STICK_DIRECTION_HEADER, direction};
         try{
             InetAddress address = InetAddress.getByAddress(IP);
@@ -73,7 +113,7 @@ public class UDP{
 
     }
 
-    public void send_speed(byte speed) {
+    private void send_speed(byte speed) {
 
         byte[] buffer = {TARGET_SPEED_HEADER, speed};
         try{

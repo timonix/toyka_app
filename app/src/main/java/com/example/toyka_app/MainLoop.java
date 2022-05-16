@@ -72,8 +72,8 @@ public class MainLoop extends Thread {
             disp.updateBatteryIndicator(udp.batteryLevel()/256.0);
             disp.setJoystickLocation();
 
-            udp.send_speed(speedSignal);
-            udp.send_direction(directionSignal);
+            udp.update_speed(speedSignal);
+            udp.update_direction(directionSignal);
 
         }
     }
